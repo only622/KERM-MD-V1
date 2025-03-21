@@ -1,4 +1,4 @@
-/*
+
 const { cmd } = require('../command');
 const { downloadMediaMessage } = require('../lib/msg');
 const fs = require("fs");
@@ -85,4 +85,3 @@ conn.on('message-delete', async (deletedMessage) => {
     console.error("Error in Anti-Delete command:", error);
   }
 });
-*/

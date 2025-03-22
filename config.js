@@ -6,7 +6,7 @@ _  ______   _____ _____ _____ _   _
 |_|\_\____|   |_| |_____\____|_| |_|
 
 ANYWAY, YOU MUST GIVE CREDIT TO MY CODE WHEN COPY IT
-CONTACT ME HERE +237656520674
+CONTACT ME HERE +1 4432452503 
 YT: KermHackTools
 Github: Kgtech-cmr
 */
@@ -19,7 +19,7 @@ function convertToBool(text, fault = 'true') {
     return text === fault ? true : false;
 }
 module.exports = {
-SESSION_ID: process.env.SESSION_ID || "PUT YOUR SESSION ID HERE",
+SESSION_ID: process.env.SESSION_ID ||KERM-MD-V1~ycwmCKRC#NlpOjHp8e-teu-OMZ9B1XguGIsH6XRES7o-UVxdE6zY
 AUTO_READ_STATUS: process.env.AUTO_READ_STATUS || "true",
 MODE: process.env.MODE || "private",
 AUTO_VOICE: process.env.AUTO_VOICE || "false",

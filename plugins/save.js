@@ -187,42 +187,44 @@ cmd({
       return reply("❌ Please reply to a status, photo or video message to save it.");
     }
     
-    // Si le message est vu unique, extraire son contenu réel
+    // On récupère le contenu réel du message
+    let message = quoted.message || quoted;
     let isViewOnce = false;
-    if (quoted.msg && quoted.msg.ephemeralMessage) {
+    if (message.ephemeralMessage) {
       isViewOnce = true;
-      quoted = quoted.msg.ephemeralMessage.message;
+      message = message.ephemeralMessage.message;
     }
-
-    // Récupération du message interne
-    let msg = quoted.msg || quoted;
     
-    // Tentative d'extraction du mimetype depuis la racine
-    let mime = msg.mimetype || "";
+    // Recherche du type de média et de son mimetype
+    let mime = "";
+    let mediaType = "";
     
-    // Si mime est vide, tenter de le récupérer depuis les propriétés spécifiques
-    if (!mime) {
-      if (msg.imageMessage) {
-        mime = msg.imageMessage.mimetype;
-      } else if (msg.videoMessage) {
-        mime = msg.videoMessage.mimetype;
-      } else if (msg.audioMessage) {
-        mime = msg.audioMessage.mimetype;
+    if (message.imageMessage) {
+      mime = message.imageMessage.mimetype;
+      mediaType = "image";
+    } else if (message.videoMessage) {
+      mime = message.videoMessage.mimetype;
+      mediaType = "video";
+    } else if (message.audioMessage) {
+      mime = message.audioMessage.mimetype;
+      mediaType = "audio";
+    } else if (message.documentMessage) {
+      // Parfois, les médias sont envoyés en tant que document
+      mime = message.documentMessage.mimetype;
+      if (mime.startsWith("image")) {
+        mediaType = "image";
+      } else if (mime.startsWith("video")) {
+        mediaType = "video";
+      } else if (mime.startsWith("audio")) {
+        mediaType = "audio";
       }
     }
     
-    let mediaType = "";
-    if (mime.startsWith("image")) {
-      mediaType = "image";
-    } else if (mime.startsWith("video")) {
-      mediaType = "video";
-    } else if (mime.startsWith("audio")) {
-      mediaType = "audio";
-    } else {
+    if (!mime || !mediaType) {
       return reply("❌ Unsupported media type. Please reply to a status, photo, or video message.");
     }
     
-    // Télécharger le média
+    // Télécharger le média à partir du message cité
     const mediaBuffer = await quoted.download();
     if (!mediaBuffer) return reply("❌ Failed to download the media.");
     
@@ -238,7 +240,6 @@ cmd({
     // Envoyer le média dans le chat privé du propriétaire
     await conn.sendMessage(m.sender, messageOptions);
     
-    // Indiquer si le message était vu unique
     if (isViewOnce) {
       await conn.sendMessage(m.sender, { text: "Le média était en mode vu unique et a été sauvegardé." });
     }

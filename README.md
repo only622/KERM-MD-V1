@@ -36,13 +36,13 @@
 
 [![FORK KERM_MD-V4](https://img.shields.io/badge/FORK%20-KERM%20MD%20V1-white)](https://github.com/Kgtech-cmr/KERM-MD-V1/fork)
 
-### <br>    ❖ SESSION_ID ❖
+### <br>    ❖ SESSION_ID ❖ KERM-MD-V1~nAxjELCA#2UHUprqUdYffkYvrQ9hy4b3E3_gvoGbMUo4vOOynVZ4
 
 
 `✠ IF YOU DON'T HAVE YOUR SESSION_ID SO U CAN GET IT CLICK ON SESSION_ID BUTTON AND PASTE YOUR NUMBER With COUNTRY CODE EXAMPLE:+237xxxxxx THEN YOU CAN GET YOUR SESSION_ID ✠`
 
 ----------
-1. USE SESSION 1.
+1. USE SESSION 1.KERM-MD-V1~nAxjELCA#2UHUprqUdYffkYvrQ9hy4b3E3_gvoGbMUo4vOOynVZ4
 <p align="center">
 <a href="https://pair-session-kermv4-pair.onrender.com"><img height= "35" title="Author" src="https://img.shields.io/badge/GET SESSION ID:1-black?style=for-the-badge&logo=render"></a>
 <p/>

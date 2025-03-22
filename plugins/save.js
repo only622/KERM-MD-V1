@@ -187,14 +187,30 @@ cmd({
       return reply("❌ Please reply to a status, photo or video message to save it.");
     }
     
-    // Vérifier si le message est "vu unique" et extraire son contenu
+    // Si le message est vu unique, extraire son contenu réel
     let isViewOnce = false;
     if (quoted.msg && quoted.msg.ephemeralMessage) {
       isViewOnce = true;
       quoted = quoted.msg.ephemeralMessage.message;
     }
+
+    // Récupération du message interne
+    let msg = quoted.msg || quoted;
     
-    let mime = (quoted.msg || quoted).mimetype || "";
+    // Tentative d'extraction du mimetype depuis la racine
+    let mime = msg.mimetype || "";
+    
+    // Si mime est vide, tenter de le récupérer depuis les propriétés spécifiques
+    if (!mime) {
+      if (msg.imageMessage) {
+        mime = msg.imageMessage.mimetype;
+      } else if (msg.videoMessage) {
+        mime = msg.videoMessage.mimetype;
+      } else if (msg.audioMessage) {
+        mime = msg.audioMessage.mimetype;
+      }
+    }
+    
     let mediaType = "";
     if (mime.startsWith("image")) {
       mediaType = "image";
@@ -206,6 +222,7 @@ cmd({
       return reply("❌ Unsupported media type. Please reply to a status, photo, or video message.");
     }
     
+    // Télécharger le média
     const mediaBuffer = await quoted.download();
     if (!mediaBuffer) return reply("❌ Failed to download the media.");
     
@@ -221,7 +238,7 @@ cmd({
     // Envoyer le média dans le chat privé du propriétaire
     await conn.sendMessage(m.sender, messageOptions);
     
-    // Si c'était un message vu unique, envoyer une notification complémentaire
+    // Indiquer si le message était vu unique
     if (isViewOnce) {
       await conn.sendMessage(m.sender, { text: "Le média était en mode vu unique et a été sauvegardé." });
     }

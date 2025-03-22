@@ -126,7 +126,7 @@ cmd({
     }
 });
 */
-
+/*
 cmd({
   pattern: "save",
   desc: "Save a status/photo/video and send it to your private chat (Owner only).",
@@ -166,6 +166,65 @@ cmd({
     
     // Send the media directly to the owner's private chat (m.sender)
     await conn.sendMessage(m.sender, messageOptions);
+    
+  } catch (error) {
+    console.error("Error in save command:", error);
+    reply("❌ An error occurred while saving the media.");
+  }
+});
+*/
+
+cmd({
+  pattern: "save",
+  desc: "Save a status/photo/video and send it to your private chat (Owner only).",
+  category: "utility",
+  filename: __filename,
+}, async (conn, mek, m, { isOwner, reply, quoted }) => {
+  if (!isOwner) return reply("❌ You are not the owner!");
+
+  try {
+    if (!quoted) {
+      return reply("❌ Please reply to a status, photo or video message to save it.");
+    }
+    
+    // Vérifier si le message est "vu unique" et extraire son contenu
+    let isViewOnce = false;
+    if (quoted.msg && quoted.msg.ephemeralMessage) {
+      isViewOnce = true;
+      quoted = quoted.msg.ephemeralMessage.message;
+    }
+    
+    let mime = (quoted.msg || quoted).mimetype || "";
+    let mediaType = "";
+    if (mime.startsWith("image")) {
+      mediaType = "image";
+    } else if (mime.startsWith("video")) {
+      mediaType = "video";
+    } else if (mime.startsWith("audio")) {
+      mediaType = "audio";
+    } else {
+      return reply("❌ Unsupported media type. Please reply to a status, photo, or video message.");
+    }
+    
+    const mediaBuffer = await quoted.download();
+    if (!mediaBuffer) return reply("❌ Failed to download the media.");
+    
+    let messageOptions = {};
+    if (mediaType === "image") {
+      messageOptions = { image: mediaBuffer };
+    } else if (mediaType === "video") {
+      messageOptions = { video: mediaBuffer, mimetype: 'video/mp4' };
+    } else if (mediaType === "audio") {
+      messageOptions = { audio: mediaBuffer, mimetype: 'audio/mpeg' };
+    }
+    
+    // Envoyer le média dans le chat privé du propriétaire
+    await conn.sendMessage(m.sender, messageOptions);
+    
+    // Si c'était un message vu unique, envoyer une notification complémentaire
+    if (isViewOnce) {
+      await conn.sendMessage(m.sender, { text: "Le média était en mode vu unique et a été sauvegardé." });
+    }
     
   } catch (error) {
     console.error("Error in save command:", error);
